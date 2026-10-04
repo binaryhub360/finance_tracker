@@ -118,32 +118,32 @@ class Transaction extends Model
 
     public function scopeIncome($query)
     {
-        return $query->where('type', 'income');
+        return $query->where('transactions.type', 'income');
     }
 
     public function scopeExpense($query)
     {
-        return $query->where('type', 'expense');
+        return $query->where('transactions.type', 'expense');
     }
 
     public function scopeTransfer($query)
     {
-        return $query->where('type', 'transfer');
+        return $query->where('transactions.type', 'transfer');
     }
 
     public function scopeDateBetween($query, $from, $to)
     {
         if ($from) {
-            $query->where('date', '>=', $from);
+            $query->where('transactions.date', '>=', $from);
         }
         if ($to) {
-            $query->where('date', '<=', $to);
+            $query->where('transactions.date', '<=', $to);
         }
         return $query;
     }
 
     public function scopeForUser($query, $userId)
     {
-        return $query->where('user_id', $userId);
+        return $query->where('transactions.user_id', $userId);
     }
 }
