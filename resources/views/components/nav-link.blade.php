@@ -2,8 +2,12 @@
 
 @php
 $classes = $active
-    ? 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-700'
-    : 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900';
+    ? 'group flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent text-emerald-700 shadow-sm shadow-emerald-500/5 border-l-[3px] border-emerald-600 transition-all duration-200'
+    : 'group flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all duration-200 border-l-[3px] border-transparent';
+
+$iconContainerClasses = $active
+    ? 'text-emerald-600'
+    : 'text-slate-400 group-hover:text-slate-600 transition-colors';
 
 $icons = [
     'home' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />',
@@ -17,8 +21,10 @@ $icons = [
 @endphp
 
 <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>
-    <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        {!! $icons[$icon] ?? $icons['home'] !!}
-    </svg>
-    {{ $slot }}
+    <span class="{{ $iconContainerClasses }}">
+        <svg class="w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+            {!! $icons[$icon] ?? $icons['home'] !!}
+        </svg>
+    </span>
+    <span class="truncate">{{ $slot }}</span>
 </a>
