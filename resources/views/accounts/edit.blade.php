@@ -36,7 +36,7 @@
                         <label for="opening_balance" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Opening Balance <span class="text-rose-500">*</span></label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-sm">
-                                {{ get_setting('currency_symbol', '$') }}
+                                {{ currency_symbol() }}
                             </span>
                             <input type="number" name="opening_balance" id="opening_balance" value="{{ old('opening_balance', $account->opening_balance) }}" step="0.01" min="0" required
                                 class="block w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-900 text-sm font-bold tracking-tight focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all font-mono">

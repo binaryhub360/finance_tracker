@@ -34,3 +34,14 @@ if (!function_exists('app_date_format')) {
         return Setting::get('date_format', 'd M Y');
     }
 }
+
+if (!function_exists('get_setting')) {
+    /**
+     * Get a setting value by key.
+     */
+    function get_setting(string $key, mixed $default = null): mixed
+    {
+        return Setting::get($key, $default);
+    }
+}
+
