@@ -76,6 +76,18 @@
                 </div>
 
                 <div>
+                    <p class="px-3 mb-2 text-[10px] font-bold tracking-wider uppercase text-slate-400">Billing & Clients</p>
+                    <div class="space-y-1">
+                        <x-nav-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="document-text">
+                            Invoices
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users">
+                            Clients
+                        </x-nav-link>
+                    </div>
+                </div>
+
+                <div>
                     <p class="px-3 mb-2 text-[10px] font-bold tracking-wider uppercase text-slate-400">Insights & Settings</p>
                     <div class="space-y-1">
                         <x-nav-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="chart">

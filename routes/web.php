@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\IncomeCategoryController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InvoicePaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
@@ -54,6 +57,17 @@ Route::middleware('auth')->group(function () {
 
     // Transactions
     Route::resource('transactions', TransactionController::class);
+
+    // Clients
+    Route::resource('clients', ClientController::class);
+    Route::patch('/clients/{client}/toggle', [ClientController::class, 'toggle'])->name('clients.toggle');
+
+    // Invoices & Client Billing
+    Route::resource('invoices', InvoiceController::class);
+    Route::patch('/invoices/{invoice}/mark-sent', [InvoiceController::class, 'markSent'])->name('invoices.mark-sent');
+    Route::get('/invoices/{invoice}/print', [InvoiceController::class, 'print'])->name('invoices.print');
+    Route::post('/invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
+    Route::delete('/invoices/{invoice}/payments/{payment}', [InvoicePaymentController::class, 'destroy'])->name('invoices.payments.destroy');
 
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {
