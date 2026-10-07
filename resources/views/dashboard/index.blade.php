@@ -163,6 +163,44 @@
         </div>
     </div>
 
+    {{-- Active Budgets Progress Section (if any configured for this month) --}}
+    @if(isset($activeBudgets) && $activeBudgets->count() > 0)
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 p-6 shadow-sm card-hover space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Active Monthly Budgets</h3>
+                        <p class="text-[11px] text-slate-400">Current spending vs targets for {{ \Carbon\Carbon::now()->format('F Y') }}</p>
+                    </div>
+                </div>
+                <a href="{{ route('budgets.index') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition">
+                    Manage Budgets &rarr;
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($activeBudgets as $b)
+                    <div class="p-4 rounded-xl bg-slate-50/70 border border-slate-200/60 space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-slate-900 truncate max-w-[140px]">{{ $b->category ? $b->category->name : 'Category' }}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold {{ $b->status_badge_classes }}">
+                                {{ $b->spent_percentage }}%
+                            </span>
+                        </div>
+                        <div class="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden">
+                            <div class="h-2 rounded-full {{ $b->progress_bar_classes }}" style="width: {{ $b->progress_width }}%"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                            <span>{{ currency_symbol() }}{{ number_format($b->spent_amount, 2) }}</span>
+                            <span>Limit: {{ currency_symbol() }}{{ number_format($b->amount, 2) }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     {{-- Recent Transactions Elevated Card --}}
     <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden card-hover">
         <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">

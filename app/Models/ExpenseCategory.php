@@ -30,6 +30,11 @@ class ExpenseCategory extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function budgets(): HasMany
+    {
+        return $this->hasMany(Budget::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

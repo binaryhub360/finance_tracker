@@ -88,6 +88,15 @@
                 </div>
 
                 <div>
+                    <p class="px-3 mb-2 text-[10px] font-bold tracking-wider uppercase text-slate-400">Planning & Targets</p>
+                    <div class="space-y-1">
+                        <x-nav-link href="{{ route('budgets.index') }}" :active="request()->routeIs('budgets.*')" icon="scale">
+                            Budgets & Limits
+                        </x-nav-link>
+                    </div>
+                </div>
+
+                <div>
                     <p class="px-3 mb-2 text-[10px] font-bold tracking-wider uppercase text-slate-400">Insights & Settings</p>
                     <div class="space-y-1">
                         <x-nav-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="chart">

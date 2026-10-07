@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Budget;
 use App\Models\ExpenseCategory;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -62,6 +63,14 @@ class DashboardController extends Controller
             ->groupBy('expense_categories.name')
             ->orderByDesc('total')
             ->get();
+        // Active budgets for the current month
+        $currentMonthStart = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $currentMonthEnd = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $activeBudgets = Budget::where('user_id', $user->id)
+            ->where('start_date', $currentMonthStart)
+            ->where('end_date', $currentMonthEnd)
+            ->with('category')
+            ->get();
 
         return view('dashboard.index', compact(
             'totalBalance',
@@ -72,6 +81,7 @@ class DashboardController extends Controller
             'recentTransactions',
             'monthlyData',
             'expenseBreakdown',
+            'activeBudgets',
             'from',
             'to',
         ));
