@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Budget;
 use App\Models\ExpenseCategory;
+use App\Models\Goal;
 use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -82,6 +83,17 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Savings Vaults & Goals overview
+        $savingsGoals = Goal::where('user_id', $user->id)
+            ->whereIn('status', ['active', 'completed'])
+            ->orderBy('status', 'asc')
+            ->orderBy('target_date', 'asc')
+            ->limit(4)
+            ->get();
+        $totalVaultSavings = Goal::where('user_id', $user->id)
+            ->whereIn('status', ['active', 'completed'])
+            ->sum('current_amount');
+
         return view('dashboard.index', compact(
             'totalBalance',
             'totalIncome',
@@ -93,6 +105,8 @@ class DashboardController extends Controller
             'expenseBreakdown',
             'activeBudgets',
             'upcomingRecurring',
+            'savingsGoals',
+            'totalVaultSavings',
             'from',
             'to',
         ));

@@ -6,6 +6,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
@@ -81,6 +82,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/recurring/{recurring}/skip', [RecurringTransactionController::class, 'skip'])->name('recurring.skip');
     Route::patch('/recurring/{recurring}/toggle-pause', [RecurringTransactionController::class, 'togglePause'])->name('recurring.toggle-pause');
     Route::resource('recurring', RecurringTransactionController::class)->parameters(['recurring' => 'recurring']);
+
+    // Savings Vaults & Financial Goals
+    Route::post('/goals/{goal}/deposit', [GoalController::class, 'deposit'])->name('goals.deposit');
+    Route::post('/goals/{goal}/withdraw', [GoalController::class, 'withdraw'])->name('goals.withdraw');
+    Route::patch('/goals/{goal}/toggle-lock', [GoalController::class, 'toggleLock'])->name('goals.toggle-lock');
+    Route::resource('goals', GoalController::class);
 
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {

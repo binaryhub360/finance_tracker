@@ -47,6 +47,16 @@ class Account extends Model
         return $this->hasMany(RecurringTransaction::class);
     }
 
+    public function goals(): HasMany
+    {
+        return $this->hasMany(Goal::class);
+    }
+
+    public function goalContributions(): HasMany
+    {
+        return $this->hasMany(GoalContribution::class);
+    }
+
     /**
      * Calculate the current balance of this account.
      *

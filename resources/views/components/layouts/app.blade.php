@@ -93,6 +93,9 @@
                         <x-nav-link href="{{ route('budgets.index') }}" :active="request()->routeIs('budgets.*')" icon="scale">
                             Budgets & Limits
                         </x-nav-link>
+                        <x-nav-link href="{{ route('goals.index') }}" :active="request()->routeIs('goals.*')" icon="vault">
+                            Savings Vaults & Goals
+                        </x-nav-link>
                         <x-nav-link href="{{ route('recurring.index') }}" :active="request()->routeIs('recurring.*')" icon="arrow-path">
                             Subscriptions & Recurring
                         </x-nav-link>

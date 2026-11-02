@@ -244,6 +244,57 @@
         </div>
     @endif
 
+    {{-- Savings Goals & Vaults Widget (if any configured) --}}
+    @if(isset($savingsGoals) && $savingsGoals->count() > 0)
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 p-6 shadow-sm card-hover space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-xs">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 tracking-tight">Savings Vaults & Goals</h3>
+                        <p class="text-xs text-slate-400">Ring-fenced reserves and target milestones</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-mono font-bold text-emerald-600 hidden sm:inline-block">
+                        Total Saved: {{ format_currency($totalVaultSavings ?? 0) }}
+                    </span>
+                    <a href="{{ route('goals.index') }}" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline">
+                        Manage Vaults →
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                @foreach($savingsGoals as $goal)
+                    @php $theme = $goal->color_theme; @endphp
+                    <a href="{{ route('goals.show', $goal) }}"
+                        class="p-4 rounded-xl bg-slate-50/80 border border-slate-200/60 hover:border-slate-300 hover:shadow-xs transition block group">
+                        <div class="flex items-center justify-between text-xs mb-2">
+                            <span class="font-bold text-slate-900 truncate group-hover:text-emerald-700 transition">{{ $goal->name }}</span>
+                            <span class="font-mono text-[11px] font-bold text-emerald-600">{{ $goal->progress_percentage }}%</span>
+                        </div>
+
+                        <div class="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden mb-2">
+                            <div class="h-full rounded-full bg-gradient-to-r {{ $theme['gradient'] }} transition-all duration-500"
+                                style="width: {{ $goal->progress_percentage }}%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                            <span class="font-bold text-slate-800">{{ format_currency($goal->current_amount) }}</span>
+                            <span>of {{ format_currency($goal->target_amount) }}</span>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     {{-- Recent Transactions Elevated Card --}}
     <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden card-hover">
         <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">

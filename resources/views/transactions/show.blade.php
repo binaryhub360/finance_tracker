@@ -85,6 +85,18 @@
                     </div>
                 @endif
 
+                @if($transaction->goal)
+                    <div class="px-6 py-4 sm:px-8 flex justify-between items-center hover:bg-slate-50/50 transition-colors">
+                        <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Savings Vault</dt>
+                        <dd class="font-medium text-slate-900">
+                            <a href="{{ route('goals.show', $transaction->goal) }}" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-semibold border border-teal-200/60 transition">
+                                <span>🛡️ {{ $transaction->goal->name }}</span>
+                                <span>→</span>
+                            </a>
+                        </dd>
+                    </div>
+                @endif
+
                 <div class="px-6 py-4 sm:px-8 flex justify-between items-center hover:bg-slate-50/50 transition-colors">
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Recorded At</dt>
                     <dd class="text-xs text-slate-500">{{ $transaction->created_at->format('d M Y, h:i A') }}</dd>

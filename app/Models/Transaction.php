@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'user_id', 'type', 'date', 'amount',
     'account_id', 'income_category_id', 'expense_category_id',
-    'recurring_transaction_id',
+    'recurring_transaction_id', 'goal_id',
     'from_account_id', 'to_account_id',
     'description', 'reference',
 ])]
@@ -49,6 +49,11 @@ class Transaction extends Model
     public function recurringTransaction(): BelongsTo
     {
         return $this->belongsTo(RecurringTransaction::class);
+    }
+
+    public function goal(): BelongsTo
+    {
+        return $this->belongsTo(Goal::class);
     }
 
     public function fromAccount(): BelongsTo
