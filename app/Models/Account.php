@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'type', 'opening_balance', 'opening_balance_date', 'is_active', 'notes', 'sort_order'])]
+#[Fillable(['user_id', 'name', 'type', 'currency', 'opening_balance', 'opening_balance_date', 'is_active', 'notes', 'sort_order'])]
 class Account extends Model
 {
     use HasFactory;
@@ -85,6 +85,22 @@ class Account extends Model
         $balance = bcsub($balance, $transfersOut, 2);
 
         return $balance;
+    }
+
+    /**
+     * Get the balance converted to system base currency.
+     */
+    public function getBaseBalanceAttribute(): float
+    {
+        return Currency::toBase((float) $this->balance, $this->currency ?? 'BDT');
+    }
+
+    /**
+     * Get currency symbol for this account.
+     */
+    public function getCurrencySymbolAttribute(): string
+    {
+        return Currency::getSymbol($this->currency ?? 'BDT');
     }
 
     /**

@@ -100,7 +100,10 @@
                                     {{ $txn->account_display }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-extrabold whitespace-nowrap text-right font-tabular {{ $txn->type === 'income' ? 'text-emerald-600' : ($txn->type === 'expense' ? 'text-rose-600' : 'text-blue-600') }}">
-                                    {{ $txn->type === 'expense' ? '-' : ($txn->type === 'income' ? '+' : '') }}{{ format_currency($txn->amount) }}
+                                    <div>{{ $txn->type === 'expense' ? '-' : ($txn->type === 'income' ? '+' : '') }}{{ format_currency($txn->amount, $txn->currency) }}</div>
+                                    @if($txn->currency && $txn->currency !== (get_setting('currency_code', 'BDT')) && $txn->base_amount)
+                                        <div class="text-[10px] text-slate-400 font-normal">≈ {{ format_currency($txn->base_amount) }}</div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-xs text-slate-500 max-w-xs truncate">
                                     <div class="flex items-center gap-1.5">

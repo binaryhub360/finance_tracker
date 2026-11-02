@@ -19,16 +19,30 @@
                     @error('name') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
                 </div>
 
-                <div>
-                    <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Account Type <span class="text-rose-500">*</span></label>
-                    <select name="type" id="type" required class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
-                        <option value="cash" {{ old('type', $account->type) == 'cash' ? 'selected' : '' }}>Cash in Hand</option>
-                        <option value="bank" {{ old('type', $account->type) == 'bank' ? 'selected' : '' }}>Bank Account</option>
-                        <option value="mobile_wallet" {{ old('type', $account->type) == 'mobile_wallet' ? 'selected' : '' }}>Mobile Wallet (bKash / Nagad / etc.)</option>
-                        <option value="credit_card" {{ old('type', $account->type) == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
-                        <option value="other" {{ old('type', $account->type) == 'other' ? 'selected' : '' }}>Other Asset</option>
-                    </select>
-                    @error('type') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Account Type <span class="text-rose-500">*</span></label>
+                        <select name="type" id="type" required class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            <option value="cash" {{ old('type', $account->type) == 'cash' ? 'selected' : '' }}>Cash in Hand</option>
+                            <option value="bank" {{ old('type', $account->type) == 'bank' ? 'selected' : '' }}>Bank Account</option>
+                            <option value="mobile_wallet" {{ old('type', $account->type) == 'mobile_wallet' ? 'selected' : '' }}>Mobile Wallet (bKash / Nagad / etc.)</option>
+                            <option value="credit_card" {{ old('type', $account->type) == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
+                            <option value="other" {{ old('type', $account->type) == 'other' ? 'selected' : '' }}>Other Asset</option>
+                        </select>
+                        @error('type') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label for="currency" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Account Currency <span class="text-rose-500">*</span></label>
+                        <select name="currency" id="currency" required class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            @foreach($currencies ?? \App\Models\Currency::where('is_active', true)->get() as $cur)
+                                <option value="{{ $cur->code }}" {{ old('currency', $account->currency ?? 'BDT') == $cur->code ? 'selected' : '' }}>
+                                    {{ $cur->code }} - {{ $cur->name }} ({{ $cur->symbol }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('currency') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

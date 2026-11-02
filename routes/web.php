@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\GoalController;
@@ -104,4 +105,12 @@ Route::middleware('auth')->group(function () {
     // Settings
     Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // Multi-Currency & Real-Time Exchange Rates
+    Route::get('/currencies', [CurrencyController::class, 'index'])->name('currencies.index');
+    Route::post('/currencies/sync', [CurrencyController::class, 'syncRates'])->name('currencies.sync');
+    Route::get('/currencies/convert', [CurrencyController::class, 'convert'])->name('currencies.convert');
+    Route::post('/currencies/{currency}/set-base', [CurrencyController::class, 'setBase'])->name('currencies.set-base');
+    Route::put('/currencies/{currency}', [CurrencyController::class, 'update'])->name('currencies.update');
+    Route::post('/currencies', [CurrencyController::class, 'store'])->name('currencies.store');
 });

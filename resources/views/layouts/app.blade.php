@@ -108,6 +108,9 @@
                         <x-nav-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="chart">
                             Reports & Analytics
                         </x-nav-link>
+                        <x-nav-link href="{{ route('currencies.index') }}" :active="request()->routeIs('currencies.*')" icon="globe">
+                            Currencies & Rates
+                        </x-nav-link>
                         <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')" icon="cog">
                             Settings
                         </x-nav-link>

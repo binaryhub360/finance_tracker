@@ -4,14 +4,29 @@ use App\Models\Setting;
 
 if (!function_exists('format_currency')) {
     /**
-     * Format a number as currency using app settings.
+     * Format a number as currency using app settings or specified currency code.
      */
-    function format_currency(string|float|int|null $amount): string
+    function format_currency(string|float|int|null $amount, ?string $currencyCode = null): string
     {
-        $symbol = Setting::get('currency_symbol', '৳');
+        if ($currencyCode) {
+            $symbol = \App\Models\Currency::getSymbol($currencyCode);
+        } else {
+            $symbol = Setting::get('currency_symbol', '৳');
+        }
         $amount = number_format((float) ($amount ?? 0), 2);
 
         return $symbol . ' ' . $amount;
+    }
+}
+
+if (!function_exists('convert_currency')) {
+    /**
+     * Convert an amount between currencies.
+     */
+    function convert_currency(string|float|int|null $amount, string $from, ?string $to = null): float
+    {
+        $to = $to ?? Setting::get('currency_code', 'BDT');
+        return \App\Models\Currency::convert((float) $amount, $from, $to);
     }
 }
 

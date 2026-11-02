@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'user_id', 'type', 'date', 'amount',
+    'currency', 'exchange_rate', 'base_amount',
     'account_id', 'income_category_id', 'expense_category_id',
     'recurring_transaction_id', 'goal_id',
     'from_account_id', 'to_account_id',
@@ -23,7 +24,32 @@ class Transaction extends Model
         return [
             'date' => 'date',
             'amount' => 'decimal:2',
+            'exchange_rate' => 'decimal:6',
+            'base_amount' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Transaction $transaction) {
+            if (!$transaction->currency) {
+                // If account is linked, default to account currency
+                if ($transaction->account_id && $transaction->account) {
+                    $transaction->currency = $transaction->account->currency ?? 'BDT';
+                } else {
+                    $transaction->currency = 'BDT';
+                }
+            }
+
+            if (!$transaction->exchange_rate || (float) $transaction->exchange_rate <= 0) {
+                $c = Currency::where('code', $transaction->currency)->first();
+                $transaction->exchange_rate = $c ? (float) $c->exchange_rate : 1.000000;
+            }
+
+            if ($transaction->base_amount === null || (float) $transaction->base_amount == 0) {
+                $transaction->base_amount = round((float) $transaction->amount * (float) $transaction->exchange_rate, 2);
+            }
+        });
     }
 
     public function user(): BelongsTo

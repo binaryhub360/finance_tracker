@@ -44,15 +44,23 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                                        {{ $account->type_label }}
-                                    </span>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                                            {{ $account->type_label }}
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                            {{ $account->currency ?? 'BDT' }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 text-xs font-semibold text-slate-500 text-right font-tabular whitespace-nowrap">
-                                    {{ format_currency($account->opening_balance) }}
+                                    {{ format_currency($account->opening_balance, $account->currency) }}
                                 </td>
                                 <td class="px-6 py-4 text-sm font-extrabold text-right font-tabular whitespace-nowrap {{ $account->balance >= 0 ? 'text-slate-900' : 'text-rose-600' }}">
-                                    {{ format_currency($account->balance) }}
+                                    <div>{{ format_currency($account->balance, $account->currency) }}</div>
+                                    @if($account->currency && $account->currency !== (get_setting('currency_code', 'BDT')))
+                                        <div class="text-[10px] text-slate-400 font-normal">≈ {{ format_currency($account->base_balance) }}</div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
                                     <form method="POST" action="{{ route('accounts.toggle', $account) }}" class="inline">

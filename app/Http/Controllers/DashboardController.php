@@ -22,19 +22,19 @@ class DashboardController extends Controller
         $to = $dates['to'];
 
         // Summary cards
-        $totalIncome = Transaction::forUser($user->id)
+        $totalIncome = (string) Transaction::forUser($user->id)
             ->income()
             ->dateBetween($from, $to)
-            ->sum('amount');
+            ->sum(\Illuminate\Support\Facades\DB::raw('COALESCE(base_amount, amount)'));
 
-        $totalExpense = Transaction::forUser($user->id)
+        $totalExpense = (string) Transaction::forUser($user->id)
             ->expense()
             ->dateBetween($from, $to)
-            ->sum('amount');
+            ->sum(\Illuminate\Support\Facades\DB::raw('COALESCE(base_amount, amount)'));
 
         $netCashFlow = bcsub($totalIncome, $totalExpense, 2);
 
-        // All accounts with balances
+        // All accounts with balances converted to base currency
         $accounts = Account::where('user_id', $user->id)
             ->active()
             ->ordered()
@@ -42,7 +42,7 @@ class DashboardController extends Controller
 
         $totalBalance = '0.00';
         foreach ($accounts as $account) {
-            $totalBalance = bcadd($totalBalance, $account->balance, 2);
+            $totalBalance = bcadd($totalBalance, (string) $account->base_balance, 2);
         }
 
         // Recent transactions

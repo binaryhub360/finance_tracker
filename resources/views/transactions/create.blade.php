@@ -72,7 +72,7 @@
                         <option value="">Select Account</option>
                         @foreach($accounts as $account)
                             <option value="{{ $account->id }}" {{ old('account_id') == $account->id ? 'selected' : '' }}>
-                                {{ $account->name }} &bull; {{ $account->type_label }}
+                                {{ $account->name }} &bull; {{ $account->currency ?? 'BDT' }} ({{ format_currency($account->balance, $account->currency) }})
                             </option>
                         @endforeach
                     </select>
@@ -111,7 +111,7 @@
                             <select name="from_account_id" id="from_account_id" class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                                 <option value="">Select Source Account</option>
                                 @foreach($accounts as $account)
-                                    <option value="{{ $account->id }}" {{ old('from_account_id') == $account->id ? 'selected' : '' }}>{{ $account->name }}</option>
+                                    <option value="{{ $account->id }}" {{ old('from_account_id') == $account->id ? 'selected' : '' }}>{{ $account->name }} &bull; {{ $account->currency ?? 'BDT' }} ({{ format_currency($account->balance, $account->currency) }})</option>
                                 @endforeach
                             </select>
                             @error('from_account_id') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
@@ -121,7 +121,7 @@
                             <select name="to_account_id" id="to_account_id" class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                                 <option value="">Select Destination Account</option>
                                 @foreach($accounts as $account)
-                                    <option value="{{ $account->id }}" {{ old('to_account_id') == $account->id ? 'selected' : '' }}>{{ $account->name }}</option>
+                                    <option value="{{ $account->id }}" {{ old('to_account_id') == $account->id ? 'selected' : '' }}>{{ $account->name }} &bull; {{ $account->currency ?? 'BDT' }} ({{ format_currency($account->balance, $account->currency) }})</option>
                                 @endforeach
                             </select>
                             @error('to_account_id') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
+use App\Models\Currency;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,13 +23,15 @@ class AccountController extends Controller
 
     public function create(): View
     {
-        return view('accounts.create');
+        $currencies = Currency::where('is_active', true)->orderBy('is_base', 'desc')->orderBy('code', 'asc')->get();
+        return view('accounts.create', compact('currencies'));
     }
 
     public function store(StoreAccountRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
+        $data['currency'] = $data['currency'] ?? 'BDT';
         $data['is_active'] = $request->boolean('is_active', true);
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
@@ -40,12 +43,14 @@ class AccountController extends Controller
 
     public function edit(Account $account): View
     {
-        return view('accounts.edit', compact('account'));
+        $currencies = Currency::where('is_active', true)->orderBy('is_base', 'desc')->orderBy('code', 'asc')->get();
+        return view('accounts.edit', compact('account', 'currencies'));
     }
 
     public function update(UpdateAccountRequest $request, Account $account): RedirectResponse
     {
         $data = $request->validated();
+        $data['currency'] = $data['currency'] ?? $account->currency ?? 'BDT';
         $data['is_active'] = $request->boolean('is_active');
         $data['sort_order'] = $data['sort_order'] ?? 0;
 

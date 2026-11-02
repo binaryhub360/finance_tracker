@@ -92,12 +92,22 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-semibold text-slate-900">{{ $account->name }}</p>
-                                        <p class="text-[11px] font-medium text-slate-400 capitalize">{{ $account->type_label }}</p>
+                                        <p class="text-[11px] font-medium text-slate-400 capitalize">
+                                            {{ $account->type_label }}
+                                            @if($account->currency)
+                                                <span class="text-emerald-600 font-mono font-bold">• {{ $account->currency }}</span>
+                                            @endif
+                                        </p>
                                     </div>
                                 </div>
-                                <span class="text-sm font-bold font-tabular {{ $account->balance >= 0 ? 'text-slate-900' : 'text-rose-600' }}">
-                                    {{ format_currency($account->balance) }}
-                                </span>
+                                <div class="text-right">
+                                    <span class="text-sm font-bold font-tabular {{ $account->balance >= 0 ? 'text-slate-900' : 'text-rose-600' }}">
+                                        {{ format_currency($account->balance, $account->currency) }}
+                                    </span>
+                                    @if($account->currency && $account->currency !== (get_setting('currency_code', 'BDT')))
+                                        <div class="text-[10px] text-slate-400 font-normal">≈ {{ format_currency($account->base_balance) }}</div>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>

@@ -28,10 +28,15 @@
                     </span>
                     <span class="text-xs font-medium text-slate-400">#TRX-{{ str_pad($transaction->id, 5, '0', STR_PAD_LEFT) }}</span>
                 </div>
-                <div class="flex items-baseline gap-1">
+                <div class="flex flex-col gap-0.5">
                     <span class="text-3xl sm:text-4xl font-extrabold tracking-tight {{ $transaction->type_color }} font-mono">
-                        {{ $transaction->type === 'expense' ? '−' : ($transaction->type === 'income' ? '+' : '') }}{{ format_currency($transaction->amount) }}
+                        {{ $transaction->type === 'expense' ? '−' : ($transaction->type === 'income' ? '+' : '') }}{{ format_currency($transaction->amount, $transaction->currency) }}
                     </span>
+                    @if($transaction->currency && $transaction->currency !== (get_setting('currency_code', 'BDT')) && $transaction->base_amount)
+                        <span class="text-xs text-slate-500 font-mono font-medium">
+                            ≈ {{ format_currency($transaction->base_amount) }} (Exchange Rate: 1 {{ $transaction->currency }} = {{ number_format((float) $transaction->exchange_rate, 4) }})
+                        </span>
+                    @endif
                 </div>
                 @if($transaction->description)
                     <p class="text-sm text-slate-600 mt-2 font-medium">{{ $transaction->description }}</p>

@@ -17,6 +17,7 @@ class StoreAccountRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'type' => ['required', Rule::in(['cash', 'bank', 'mobile_wallet', 'credit_card', 'other'])],
+            'currency' => ['nullable', 'string', 'max:10'],
             'opening_balance' => ['required', 'numeric', 'min:0'],
             'opening_balance_date' => ['nullable', 'date'],
             'is_active' => ['boolean'],
