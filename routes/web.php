@@ -9,6 +9,7 @@ use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
+use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
@@ -73,6 +74,13 @@ Route::middleware('auth')->group(function () {
     // Budgets & Spending Limits
     Route::post('/budgets/copy-previous', [BudgetController::class, 'copyPrevious'])->name('budgets.copy-previous');
     Route::resource('budgets', BudgetController::class)->except(['show']);
+
+    // Recurring Transactions & Subscriptions Tracker
+    Route::post('/recurring/process-due', [RecurringTransactionController::class, 'processDue'])->name('recurring.process-due');
+    Route::post('/recurring/{recurring}/log', [RecurringTransactionController::class, 'logOccurrence'])->name('recurring.log');
+    Route::post('/recurring/{recurring}/skip', [RecurringTransactionController::class, 'skip'])->name('recurring.skip');
+    Route::patch('/recurring/{recurring}/toggle-pause', [RecurringTransactionController::class, 'togglePause'])->name('recurring.toggle-pause');
+    Route::resource('recurring', RecurringTransactionController::class)->parameters(['recurring' => 'recurring']);
 
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {

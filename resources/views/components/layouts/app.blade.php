@@ -93,6 +93,9 @@
                         <x-nav-link href="{{ route('budgets.index') }}" :active="request()->routeIs('budgets.*')" icon="scale">
                             Budgets & Limits
                         </x-nav-link>
+                        <x-nav-link href="{{ route('recurring.index') }}" :active="request()->routeIs('recurring.*')" icon="arrow-path">
+                            Subscriptions & Recurring
+                        </x-nav-link>
                     </div>
                 </div>
 
@@ -114,12 +117,12 @@
                 <div class="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200/70 shadow-xs">
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                            {{ substr(auth()->user()->name ?? 'U', 0, 2) }}
+                            {{ substr(auth()->user()?->name ?? 'U', 0, 2) }}
                             <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white animate-beacon"></span>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs font-semibold text-slate-900 truncate">{{ auth()->user()->name }}</p>
-                            <p class="text-[11px] text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                            <p class="text-xs font-semibold text-slate-900 truncate">{{ auth()->user()?->name ?? 'User' }}</p>
+                            <p class="text-[11px] text-slate-400 truncate">{{ auth()->user()?->email ?? '' }}</p>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
@@ -146,7 +149,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">@yield('page-title', 'Dashboard')</h1>
-                        <p class="text-xs text-slate-400 hidden sm:block">Welcome back, {{ auth()->user()->name }}</p>
+                        <p class="text-xs text-slate-400 hidden sm:block">Welcome back, {{ auth()->user()?->name ?? 'User' }}</p>
                     </div>
                 </div>
 

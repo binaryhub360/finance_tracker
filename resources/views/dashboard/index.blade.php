@@ -201,6 +201,49 @@
         </div>
     @endif
 
+    {{-- Upcoming Subscriptions & Bills Widget (if any due soon) --}}
+    @if(isset($upcomingRecurring) && $upcomingRecurring->count() > 0)
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 p-6 shadow-sm card-hover space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Upcoming Renewals & Bills</h3>
+                        <p class="text-[11px] text-slate-400">Recurring commitments due within the next 7 days</p>
+                    </div>
+                </div>
+                <a href="{{ route('recurring.index') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition">
+                    View All Subscriptions &rarr;
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                @foreach($upcomingRecurring as $item)
+                    <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/60 flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-xs text-slate-900 truncate">{{ $item->name }}</span>
+                                <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full {{ $item->due_badge_classes }}">
+                                    {{ $item->due_badge_label }}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5 font-mono">
+                                {{ format_currency($item->amount) }} &bull; {{ $item->account?->name ?? 'Unassigned' }}
+                            </p>
+                        </div>
+
+                        <form method="POST" action="{{ route('recurring.log', $item) }}" class="shrink-0">
+                            @csrf
+                            <button type="submit" class="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-xl transition">
+                                Log
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     {{-- Recent Transactions Elevated Card --}}
     <div class="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden card-hover">
         <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">

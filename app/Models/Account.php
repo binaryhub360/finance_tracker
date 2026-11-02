@@ -42,6 +42,11 @@ class Account extends Model
         return $this->hasMany(Transaction::class, 'to_account_id');
     }
 
+    public function recurringTransactions(): HasMany
+    {
+        return $this->hasMany(RecurringTransaction::class);
+    }
+
     /**
      * Calculate the current balance of this account.
      *

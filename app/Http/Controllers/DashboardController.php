@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Budget;
 use App\Models\ExpenseCategory;
+use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -72,6 +73,15 @@ class DashboardController extends Controller
             ->with('category')
             ->get();
 
+        // Upcoming recurring transactions due in next 7 days or overdue
+        $upcomingRecurring = RecurringTransaction::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->where('next_due_date', '<=', Carbon::today()->addDays(7)->format('Y-m-d'))
+            ->with(['account', 'expenseCategory', 'incomeCategory'])
+            ->orderBy('next_due_date', 'asc')
+            ->limit(5)
+            ->get();
+
         return view('dashboard.index', compact(
             'totalBalance',
             'totalIncome',
@@ -82,6 +92,7 @@ class DashboardController extends Controller
             'monthlyData',
             'expenseBreakdown',
             'activeBudgets',
+            'upcomingRecurring',
             'from',
             'to',
         ));
