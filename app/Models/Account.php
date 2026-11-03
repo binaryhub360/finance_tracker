@@ -57,6 +57,11 @@ class Account extends Model
         return $this->hasMany(GoalContribution::class);
     }
 
+    public function importBatches(): HasMany
+    {
+        return $this->hasMany(ImportBatch::class);
+    }
+
     /**
      * Calculate the current balance of this account.
      *

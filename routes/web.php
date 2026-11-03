@@ -8,6 +8,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\ImportExportController;
 use App\Http\Controllers\IncomeCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
@@ -122,5 +123,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/report', [TaxController::class, 'report'])->name('report');
         Route::post('/transactions/{transaction}/toggle', [TaxController::class, 'quickToggle'])->name('toggle');
         Route::put('/settings', [TaxController::class, 'updateSettings'])->name('settings.update');
+    });
+
+    // Data Import / Export Hub
+    Route::prefix('import-export')->name('import-export.')->group(function () {
+        Route::get('/', [ImportExportController::class, 'index'])->name('index');
+        Route::post('/preview', [ImportExportController::class, 'preview'])->name('preview');
+        Route::post('/process', [ImportExportController::class, 'process'])->name('process');
+        Route::post('/batches/{batch}/rollback', [ImportExportController::class, 'rollback'])->name('rollback');
+        Route::get('/template/{type}', [ImportExportController::class, 'downloadTemplate'])->name('template');
+        Route::get('/export/{dataset}', [ImportExportController::class, 'export'])->name('export');
     });
 });

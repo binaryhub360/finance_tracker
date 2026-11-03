@@ -114,6 +114,9 @@
                         <x-nav-link href="{{ route('taxes.index') }}" :active="request()->routeIs('taxes.*')" icon="receipt-tax">
                             Tax Deductions & Export
                         </x-nav-link>
+                        <x-nav-link href="{{ route('import-export.index') }}" :active="request()->routeIs('import-export.*')" icon="arrows-up-down">
+                            Import & Export Hub
+                        </x-nav-link>
                         <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')" icon="cog">
                             Settings
                         </x-nav-link>

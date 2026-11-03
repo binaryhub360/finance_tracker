@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'user_id', 'type', 'date', 'amount',
     'currency', 'exchange_rate', 'base_amount',
     'account_id', 'income_category_id', 'expense_category_id',
-    'recurring_transaction_id', 'goal_id',
+    'recurring_transaction_id', 'goal_id', 'import_batch_id',
     'from_account_id', 'to_account_id',
     'description', 'reference',
     'is_tax_deductible', 'tax_category', 'deduction_percentage',
@@ -100,6 +100,11 @@ class Transaction extends Model
     public function goal(): BelongsTo
     {
         return $this->belongsTo(Goal::class);
+    }
+
+    public function importBatch(): BelongsTo
+    {
+        return $this->belongsTo(ImportBatch::class);
     }
 
     public function fromAccount(): BelongsTo

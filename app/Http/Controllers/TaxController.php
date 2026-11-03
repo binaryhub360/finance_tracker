@@ -295,3 +295,4 @@ class TaxController extends Controller
         return redirect()->back()->with('success', 'Tax Profile & Fiscal Year settings updated successfully.');
     }
 }
+

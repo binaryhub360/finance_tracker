@@ -356,3 +356,4 @@ class TaxService
         return $monthly;
     }
 }
+
