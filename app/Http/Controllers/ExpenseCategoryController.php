@@ -22,7 +22,8 @@ class ExpenseCategoryController extends Controller
 
     public function create(): View
     {
-        return view('expense-categories.create');
+        $taxCategories = \App\Services\TaxService::CATEGORIES;
+        return view('expense-categories.create', compact('taxCategories'));
     }
 
     public function store(StoreExpenseCategoryRequest $request): RedirectResponse
@@ -31,6 +32,9 @@ class ExpenseCategoryController extends Controller
         $data['user_id'] = $request->user()->id;
         $data['is_active'] = $request->boolean('is_active', true);
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_tax_deductible_default'] = $request->boolean('is_tax_deductible_default');
+        $data['default_tax_category'] = $data['is_tax_deductible_default'] ? ($data['default_tax_category'] ?? null) : null;
+        $data['default_deduction_percentage'] = $data['is_tax_deductible_default'] ? ($data['default_deduction_percentage'] ?? 100.00) : 100.00;
 
         ExpenseCategory::create($data);
 
@@ -40,7 +44,8 @@ class ExpenseCategoryController extends Controller
 
     public function edit(ExpenseCategory $expenseCategory): View
     {
-        return view('expense-categories.edit', ['category' => $expenseCategory]);
+        $taxCategories = \App\Services\TaxService::CATEGORIES;
+        return view('expense-categories.edit', ['category' => $expenseCategory, 'taxCategories' => $taxCategories]);
     }
 
     public function update(StoreExpenseCategoryRequest $request, ExpenseCategory $expenseCategory): RedirectResponse
@@ -48,6 +53,9 @@ class ExpenseCategoryController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_tax_deductible_default'] = $request->boolean('is_tax_deductible_default');
+        $data['default_tax_category'] = $data['is_tax_deductible_default'] ? ($data['default_tax_category'] ?? null) : null;
+        $data['default_deduction_percentage'] = $data['is_tax_deductible_default'] ? ($data['default_deduction_percentage'] ?? 100.00) : 100.00;
 
         $expenseCategory->update($data);
 

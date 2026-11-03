@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'recurring_transaction_id', 'goal_id',
     'from_account_id', 'to_account_id',
     'description', 'reference',
+    'is_tax_deductible', 'tax_category', 'deduction_percentage',
+    'tax_deductible_amount', 'tax_notes',
 ])]
 class Transaction extends Model
 {
@@ -26,6 +28,9 @@ class Transaction extends Model
             'amount' => 'decimal:2',
             'exchange_rate' => 'decimal:6',
             'base_amount' => 'decimal:2',
+            'is_tax_deductible' => 'boolean',
+            'deduction_percentage' => 'decimal:2',
+            'tax_deductible_amount' => 'decimal:2',
         ];
     }
 
@@ -48,6 +53,21 @@ class Transaction extends Model
 
             if ($transaction->base_amount === null || (float) $transaction->base_amount == 0) {
                 $transaction->base_amount = round((float) $transaction->amount * (float) $transaction->exchange_rate, 2);
+            }
+
+            // Tax Deduction calculations
+            if ($transaction->type === 'expense' && $transaction->is_tax_deductible) {
+                $percentage = (float) ($transaction->deduction_percentage ?? 100.00);
+                if ($percentage <= 0 || $percentage > 100) {
+                    $percentage = 100.00;
+                }
+                $transaction->deduction_percentage = $percentage;
+
+                $base = (float) $transaction->base_amount;
+                $transaction->tax_deductible_amount = round($base * ($percentage / 100), 2);
+            } else {
+                $transaction->is_tax_deductible = false;
+                $transaction->tax_deductible_amount = 0.00;
             }
         });
     }
@@ -182,5 +202,32 @@ class Transaction extends Model
     public function scopeForUser($query, $userId)
     {
         return $query->where('transactions.user_id', $userId);
+    }
+
+    public function scopeTaxDeductible($query)
+    {
+        return $query->where('transactions.is_tax_deductible', true);
+    }
+
+    public function scopeFiscalYear($query, $start, $end)
+    {
+        return $query->whereBetween('transactions.date', [$start, $end]);
+    }
+
+    /**
+     * Get tax category definition from TaxService.
+     */
+    public function getTaxCategoryDefinitionAttribute(): ?array
+    {
+        return \App\Services\TaxService::getCategory($this->tax_category);
+    }
+
+    /**
+     * Get human-friendly tax category name.
+     */
+    public function getTaxCategoryLabelAttribute(): ?string
+    {
+        $def = $this->tax_category_definition;
+        return $def ? $def['name'] : ($this->tax_category ? ucwords(str_replace('_', ' ', $this->tax_category)) : null);
     }
 }

@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'description', 'is_active', 'sort_order'])]
+#[Fillable([
+    'user_id', 'name', 'description', 'is_active', 'sort_order',
+    'is_tax_deductible_default', 'default_tax_category', 'default_deduction_percentage',
+])]
 class ExpenseCategory extends Model
 {
     use HasFactory;
@@ -17,6 +20,8 @@ class ExpenseCategory extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_tax_deductible_default' => 'boolean',
+            'default_deduction_percentage' => 'decimal:2',
         ];
     }
 

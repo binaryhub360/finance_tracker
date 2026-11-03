@@ -30,6 +30,10 @@ class StoreTransactionRequest extends FormRequest
         } elseif ($type === 'expense') {
             $rules['account_id'] = ['required', 'exists:accounts,id'];
             $rules['expense_category_id'] = ['required', 'exists:expense_categories,id'];
+            $rules['is_tax_deductible'] = ['nullable', 'boolean'];
+            $rules['tax_category'] = ['nullable', 'string', 'max:100'];
+            $rules['deduction_percentage'] = ['nullable', 'numeric', 'min:1', 'max:100'];
+            $rules['tax_notes'] = ['nullable', 'string', 'max:1000'];
         } elseif ($type === 'transfer') {
             $rules['from_account_id'] = ['required', 'exists:accounts,id', 'different:to_account_id'];
             $rules['to_account_id'] = ['required', 'exists:accounts,id', 'different:from_account_id'];

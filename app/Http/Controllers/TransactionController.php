@@ -44,6 +44,16 @@ class TransactionController extends Controller
             }
         }
 
+        // Filter by tax deductibility
+        if ($request->filled('tax_deductible')) {
+            $query->where('is_tax_deductible', $request->boolean('tax_deductible'));
+        }
+
+        // Filter by tax category
+        if ($request->filled('tax_category')) {
+            $query->where('tax_category', $request->tax_category);
+        }
+
         // Filter by date range
         if ($request->filled('date_from')) {
             $query->where('date', '>=', $request->date_from);
@@ -81,8 +91,9 @@ class TransactionController extends Controller
         $accounts = Account::where('user_id', $user->id)->active()->ordered()->get();
         $incomeCategories = IncomeCategory::where('user_id', $user->id)->active()->ordered()->get();
         $expenseCategories = ExpenseCategory::where('user_id', $user->id)->active()->ordered()->get();
+        $taxCategories = \App\Services\TaxService::CATEGORIES;
 
-        return view('transactions.create', compact('accounts', 'incomeCategories', 'expenseCategories'));
+        return view('transactions.create', compact('accounts', 'incomeCategories', 'expenseCategories', 'taxCategories'));
     }
 
     public function store(StoreTransactionRequest $request): RedirectResponse
@@ -112,8 +123,9 @@ class TransactionController extends Controller
         $accounts = Account::where('user_id', $user->id)->active()->ordered()->get();
         $incomeCategories = IncomeCategory::where('user_id', $user->id)->active()->ordered()->get();
         $expenseCategories = ExpenseCategory::where('user_id', $user->id)->active()->ordered()->get();
+        $taxCategories = \App\Services\TaxService::CATEGORIES;
 
-        return view('transactions.edit', compact('transaction', 'accounts', 'incomeCategories', 'expenseCategories'));
+        return view('transactions.edit', compact('transaction', 'accounts', 'incomeCategories', 'expenseCategories', 'taxCategories'));
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction): RedirectResponse
@@ -148,14 +160,33 @@ class TransactionController extends Controller
             $data['expense_category_id'] = null;
             $data['from_account_id'] = null;
             $data['to_account_id'] = null;
+            $data['is_tax_deductible'] = false;
+            $data['tax_category'] = null;
+            $data['deduction_percentage'] = 100.00;
+            $data['tax_deductible_amount'] = 0.00;
+            $data['tax_notes'] = null;
         } elseif ($type === 'expense') {
             $data['income_category_id'] = null;
             $data['from_account_id'] = null;
             $data['to_account_id'] = null;
+
+            $isDeductible = isset($data['is_tax_deductible']) && (bool)$data['is_tax_deductible'];
+            $data['is_tax_deductible'] = $isDeductible;
+            if (!$isDeductible) {
+                $data['tax_category'] = null;
+                $data['deduction_percentage'] = 100.00;
+                $data['tax_deductible_amount'] = 0.00;
+                $data['tax_notes'] = null;
+            }
         } elseif ($type === 'transfer') {
             $data['account_id'] = null;
             $data['income_category_id'] = null;
             $data['expense_category_id'] = null;
+            $data['is_tax_deductible'] = false;
+            $data['tax_category'] = null;
+            $data['deduction_percentage'] = 100.00;
+            $data['tax_deductible_amount'] = 0.00;
+            $data['tax_notes'] = null;
         }
 
         return $data;

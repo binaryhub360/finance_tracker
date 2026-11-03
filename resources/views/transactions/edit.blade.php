@@ -99,13 +99,71 @@
                 {{-- Expense Category --}}
                 <div id="field-expense-category" class="hidden">
                     <label for="expense_category_id" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Expense Category <span class="text-rose-500">*</span></label>
-                    <select name="expense_category_id" id="expense_category_id" class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                    <select name="expense_category_id" id="expense_category_id" onchange="onExpenseCategoryChange()" class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/70 text-slate-800 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                         <option value="">Select Category</option>
                         @foreach($expenseCategories as $cat)
-                            <option value="{{ $cat->id }}" {{ old('expense_category_id', $transaction->expense_category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}"
+                                data-tax-default="{{ $cat->is_tax_deductible_default ? '1' : '0' }}"
+                                data-tax-category="{{ $cat->default_tax_category }}"
+                                data-tax-pct="{{ $cat->default_deduction_percentage }}"
+                                {{ old('expense_category_id', $transaction->expense_category_id) == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
                         @endforeach
                     </select>
                     @error('expense_category_id') <p class="mt-1.5 text-xs text-rose-600 font-medium">{{ $message }}</p> @enderror
+
+                    {{-- Tax Deductibility Card --}}
+                    <div class="mt-4 p-4 rounded-2xl bg-amber-500/[0.04] border border-amber-500/20">
+                        <div class="flex items-start justify-between gap-3">
+                            <label class="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="is_tax_deductible" id="is_tax_deductible" value="1"
+                                    {{ old('is_tax_deductible', $transaction->is_tax_deductible) ? 'checked' : '' }}
+                                    class="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500/20"
+                                    onchange="toggleTaxDeductionCard()">
+                                <div>
+                                    <span class="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5">
+                                        🏷️ Claim as Tax Deductible Business Expense
+                                    </span>
+                                    <span class="text-[11px] text-slate-500 block">Eligible for end-of-year tax deduction or business expense write-off</span>
+                                </div>
+                            </label>
+                            <span id="deductible-badge" class="{{ old('is_tax_deductible', $transaction->is_tax_deductible) ? '' : 'hidden' }} px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                Deductible: <span id="deductible-preview">{{ number_format($transaction->tax_deductible_amount ?? 0, 2) }}</span>
+                            </span>
+                        </div>
+
+                        <div id="tax-deduction-fields" class="mt-3 pt-3 border-t border-amber-500/15 space-y-3 {{ old('is_tax_deductible', $transaction->is_tax_deductible) ? '' : 'hidden' }}">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="tax_category" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Tax Schedule / Category</label>
+                                    <select name="tax_category" id="tax_category" onchange="onTaxCategoryChange()"
+                                        class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-medium focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                                        @foreach($taxCategories as $code => $cat)
+                                            <option value="{{ $code }}" data-default-pct="{{ $cat['default_percentage'] }}" {{ old('tax_category', $transaction->tax_category ?? 'software_subscriptions') == $code ? 'selected' : '' }}>
+                                                {{ $cat['name'] }} ({{ $cat['tax_schedule'] }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="deduction_percentage" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Deduction Percentage (%)</label>
+                                    <div class="relative">
+                                        <input type="number" name="deduction_percentage" id="deduction_percentage" step="1" min="1" max="100"
+                                            value="{{ old('deduction_percentage', $transaction->deduction_percentage ?? 100) }}" oninput="updateDeductiblePreview()"
+                                            class="block w-full px-3 py-2 pr-8 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-bold font-mono focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="tax_notes" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Tax Justification / Business Purpose</label>
+                                <input type="text" name="tax_notes" id="tax_notes" value="{{ old('tax_notes', $transaction->tax_notes) }}"
+                                    class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-medium focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                    placeholder="e.g. Dedicated cloud server instance for client project">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Transfer Accounts --}}
@@ -187,8 +245,76 @@
             } else if (type === 'transfer') {
                 transfer.classList.remove('hidden');
             }
+            updateDeductiblePreview();
         }
-        document.addEventListener('DOMContentLoaded', toggleTransactionFields);
+
+        function toggleTaxDeductionCard() {
+            const isChecked = document.getElementById('is_tax_deductible').checked;
+            const fields = document.getElementById('tax-deduction-fields');
+            const badge = document.getElementById('deductible-badge');
+
+            if (isChecked) {
+                fields.classList.remove('hidden');
+                badge.classList.remove('hidden');
+            } else {
+                fields.classList.add('hidden');
+                badge.classList.add('hidden');
+            }
+            updateDeductiblePreview();
+        }
+
+        function onExpenseCategoryChange() {
+            const select = document.getElementById('expense_category_id');
+            const option = select.options[select.selectedIndex];
+            if (!option) return;
+
+            const isTaxDefault = option.dataset.taxDefault === '1';
+            const defaultCategory = option.dataset.taxCategory;
+            const defaultPct = option.dataset.taxPct;
+
+            const checkbox = document.getElementById('is_tax_deductible');
+            if (isTaxDefault && !checkbox.checked) {
+                checkbox.checked = true;
+                toggleTaxDeductionCard();
+
+                if (defaultCategory) {
+                    document.getElementById('tax_category').value = defaultCategory;
+                }
+                if (defaultPct) {
+                    document.getElementById('deduction_percentage').value = parseFloat(defaultPct);
+                }
+                updateDeductiblePreview();
+            }
+        }
+
+        function onTaxCategoryChange() {
+            const select = document.getElementById('tax_category');
+            const option = select.options[select.selectedIndex];
+            if (option && option.dataset.defaultPct) {
+                document.getElementById('deduction_percentage').value = parseFloat(option.dataset.defaultPct);
+            }
+            updateDeductiblePreview();
+        }
+
+        function updateDeductiblePreview() {
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value) || 0;
+            const pctInput = document.getElementById('deduction_percentage');
+            const pct = parseFloat(pctInput ? pctInput.value : 100) || 100;
+
+            const deductible = (amount * (pct / 100)).toFixed(2);
+            const previewEl = document.getElementById('deductible-preview');
+            if (previewEl) {
+                previewEl.textContent = deductible;
+            }
+        }
+
+        document.getElementById('amount')?.addEventListener('input', updateDeductiblePreview);
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleTransactionFields();
+            toggleTaxDeductionCard();
+            updateDeductiblePreview();
+        });
     </script>
     @endpush
 </x-layouts.app>

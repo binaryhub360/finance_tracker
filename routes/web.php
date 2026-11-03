@@ -14,6 +14,7 @@ use App\Http\Controllers\InvoicePaymentController;
 use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -113,4 +114,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/currencies/{currency}/set-base', [CurrencyController::class, 'setBase'])->name('currencies.set-base');
     Route::put('/currencies/{currency}', [CurrencyController::class, 'update'])->name('currencies.update');
     Route::post('/currencies', [CurrencyController::class, 'store'])->name('currencies.store');
+
+    // Tax Deductions & Tax Season Export
+    Route::prefix('taxes')->name('taxes.')->group(function () {
+        Route::get('/', [TaxController::class, 'index'])->name('index');
+        Route::get('/export/csv', [TaxController::class, 'exportCsv'])->name('export.csv');
+        Route::get('/report', [TaxController::class, 'report'])->name('report');
+        Route::post('/transactions/{transaction}/toggle', [TaxController::class, 'quickToggle'])->name('toggle');
+        Route::put('/settings', [TaxController::class, 'updateSettings'])->name('settings.update');
+    });
 });

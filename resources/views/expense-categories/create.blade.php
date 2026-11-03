@@ -35,6 +35,41 @@
                     </label>
                 </div>
 
+                {{-- Tax Deduction Defaults --}}
+                <div class="p-4 rounded-2xl bg-amber-500/[0.04] border border-amber-500/20 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <input type="hidden" name="is_tax_deductible_default" value="0">
+                        <input type="checkbox" name="is_tax_deductible_default" id="is_tax_deductible_default" value="1"
+                            {{ old('is_tax_deductible_default') ? 'checked' : '' }}
+                            class="h-4 w-4 rounded-lg border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer mt-0.5"
+                            onchange="document.getElementById('tax-cat-subfields').classList.toggle('hidden', !this.checked)">
+                        <label for="is_tax_deductible_default" class="text-xs font-bold text-slate-800 cursor-pointer select-none">
+                            🏷️ Default as Tax Deductible
+                            <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Transactions logged in this category will automatically be flagged as deductible</span>
+                        </label>
+                    </div>
+
+                    <div id="tax-cat-subfields" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-amber-500/15 {{ old('is_tax_deductible_default') ? '' : 'hidden' }}">
+                        <div>
+                            <label for="default_tax_category" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Default Tax Category</label>
+                            <select name="default_tax_category" id="default_tax_category"
+                                class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-medium focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                                @foreach($taxCategories as $code => $cat)
+                                    <option value="{{ $code }}" {{ old('default_tax_category', 'software_subscriptions') == $code ? 'selected' : '' }}>
+                                        {{ $cat['name'] }} ({{ $cat['tax_schedule'] }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="default_deduction_percentage" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Default Deduction %</label>
+                            <input type="number" name="default_deduction_percentage" id="default_deduction_percentage" step="1" min="1" max="100"
+                                value="{{ old('default_deduction_percentage', 100) }}"
+                                class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-bold font-mono focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
                     <button type="submit" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 transition-all duration-200 active:scale-[0.98]">
                         Create Category

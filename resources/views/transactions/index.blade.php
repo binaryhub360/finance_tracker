@@ -94,7 +94,12 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm font-semibold text-slate-900 whitespace-nowrap">
-                                    {{ $txn->category_name }}
+                                    <div>{{ $txn->category_name }}</div>
+                                    @if($txn->is_tax_deductible)
+                                        <div class="mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60" title="Tax Deductible: {{ format_currency($txn->tax_deductible_amount) }} ({{ (float)$txn->deduction_percentage }}%)">
+                                            <span>🏷️ Deductible {{ (float)$txn->deduction_percentage }}%</span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-xs text-slate-500 whitespace-nowrap">
                                     {{ $txn->account_display }}

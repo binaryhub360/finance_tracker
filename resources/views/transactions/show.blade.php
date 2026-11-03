@@ -90,6 +90,29 @@
                     </div>
                 @endif
 
+                @if($transaction->type === 'expense')
+                    <div class="px-6 py-4 sm:px-8 flex justify-between items-center hover:bg-slate-50/50 transition-colors">
+                        <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tax Deductibility</dt>
+                        <dd class="text-right">
+                            @if($transaction->is_tax_deductible)
+                                <div>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        🏷️ Deductible ({{ (float)$transaction->deduction_percentage }}%) &bull; {{ format_currency($transaction->tax_deductible_amount) }}
+                                    </span>
+                                    @if($transaction->tax_category)
+                                        <div class="text-[11px] text-slate-500 mt-1 font-semibold">{{ $transaction->tax_category_label }}</div>
+                                    @endif
+                                    @if($transaction->tax_notes)
+                                        <div class="text-[11px] text-slate-400 italic mt-0.5">"{{ $transaction->tax_notes }}"</div>
+                                    @endif
+                                </div>
+                            @else
+                                <span class="text-xs text-slate-400 font-medium">Not claimed as tax deductible</span>
+                            @endif
+                        </dd>
+                    </div>
+                @endif
+
                 @if($transaction->goal)
                     <div class="px-6 py-4 sm:px-8 flex justify-between items-center hover:bg-slate-50/50 transition-colors">
                         <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Savings Vault</dt>

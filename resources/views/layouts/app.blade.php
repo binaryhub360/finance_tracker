@@ -111,6 +111,9 @@
                         <x-nav-link href="{{ route('currencies.index') }}" :active="request()->routeIs('currencies.*')" icon="globe">
                             Currencies & Rates
                         </x-nav-link>
+                        <x-nav-link href="{{ route('taxes.index') }}" :active="request()->routeIs('taxes.*')" icon="receipt-tax">
+                            Tax Deductions & Export
+                        </x-nav-link>
                         <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')" icon="cog">
                             Settings
                         </x-nav-link>
