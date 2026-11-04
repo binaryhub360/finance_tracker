@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\CashFlowForecastController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
@@ -141,5 +142,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AuditLogController::class, 'index'])->name('index');
         Route::get('/export/csv', [AuditLogController::class, 'exportCsv'])->name('export.csv');
         Route::get('/{auditLog}', [AuditLogController::class, 'show'])->name('show');
+    });
+
+    // Cash Flow Forecasting & Runway Analytics
+    Route::prefix('cash-flow')->name('cash-flow.')->group(function () {
+        Route::get('/', [CashFlowForecastController::class, 'index'])->name('index');
+        Route::get('/data', [CashFlowForecastController::class, 'data'])->name('data');
+        Route::get('/export/csv', [CashFlowForecastController::class, 'exportCsv'])->name('export.csv');
     });
 });

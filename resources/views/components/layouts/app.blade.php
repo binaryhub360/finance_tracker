@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
     @stack('styles')
 </head>
 <body class="h-full text-slate-800 antialiased selection:bg-emerald-500 selection:text-white">
@@ -98,6 +99,9 @@
                         </x-nav-link>
                         <x-nav-link href="{{ route('recurring.index') }}" :active="request()->routeIs('recurring.*')" icon="arrow-path">
                             Subscriptions & Recurring
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('cash-flow.index') }}" :active="request()->routeIs('cash-flow.*')" icon="chart-line">
+                            Cash Flow & Runway
                         </x-nav-link>
                     </div>
                 </div>
