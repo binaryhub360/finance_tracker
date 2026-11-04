@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Budget extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'user_id',
@@ -116,5 +117,11 @@ class Budget extends Model
             return 'bg-gradient-to-r from-amber-500 to-amber-600 shadow-sm shadow-amber-500/30';
         }
         return 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm shadow-emerald-500/30';
+    }
+
+    public function getAuditLabel(): string
+    {
+        $cat = $this->category?->name ?? 'All Expenses';
+        return "Budget: {$cat} (" . number_format((float)$this->amount, 2) . " / {$this->period})";
     }
 }

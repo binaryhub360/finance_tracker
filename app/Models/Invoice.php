@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'user_id',
@@ -166,5 +167,11 @@ class Invoice extends Model
         }
 
         return $prefix . $nextNumber;
+    }
+
+    public function getAuditLabel(): string
+    {
+        $clientName = $this->client?->name;
+        return 'Invoice #' . $this->invoice_number . ($clientName ? " ({$clientName})" : '');
     }
 }

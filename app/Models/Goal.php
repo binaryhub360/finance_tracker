@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,7 +29,7 @@ use Illuminate\Support\Facades\DB;
 ])]
 class Goal extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected function casts(): array
     {
@@ -304,5 +305,10 @@ class Goal extends Model
 
             return $contribution;
         });
+    }
+
+    public function getAuditLabel(): string
+    {
+        return "Savings Goal: {$this->name} (" . ($this->currency ?? 'BDT') . ' ' . number_format((float)$this->target_amount, 2) . ')';
     }
 }

@@ -117,6 +117,9 @@
                         <x-nav-link href="{{ route('import-export.index') }}" :active="request()->routeIs('import-export.*')" icon="arrows-up-down">
                             Import & Export Hub
                         </x-nav-link>
+                        <x-nav-link href="{{ route('audit-logs.index') }}" :active="request()->routeIs('audit-logs.*')" icon="shield-check">
+                            Audit Trails & Logs
+                        </x-nav-link>
                         <x-nav-link href="{{ route('settings.edit') }}" :active="request()->routeIs('settings.*')" icon="cog">
                             Settings
                         </x-nav-link>

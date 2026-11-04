@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['user_id', 'name', 'type', 'currency', 'opening_balance', 'opening_balance_date', 'is_active', 'notes', 'sort_order'])]
 class Account extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected function casts(): array
     {

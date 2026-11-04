@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\ClientController;
@@ -133,5 +134,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/batches/{batch}/rollback', [ImportExportController::class, 'rollback'])->name('rollback');
         Route::get('/template/{type}', [ImportExportController::class, 'downloadTemplate'])->name('template');
         Route::get('/export/{dataset}', [ImportExportController::class, 'export'])->name('export');
+    });
+
+    // Audit Trails & Activity Log
+    Route::prefix('audit-logs')->name('audit-logs.')->group(function () {
+        Route::get('/', [AuditLogController::class, 'index'])->name('index');
+        Route::get('/export/csv', [AuditLogController::class, 'exportCsv'])->name('export.csv');
+        Route::get('/{auditLog}', [AuditLogController::class, 'show'])->name('show');
     });
 });

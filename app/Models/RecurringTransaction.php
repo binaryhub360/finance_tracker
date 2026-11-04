@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class RecurringTransaction extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'user_id',
@@ -311,5 +312,10 @@ class RecurringTransaction extends Model
         }
 
         $this->update($updates);
+    }
+
+    public function getAuditLabel(): string
+    {
+        return "Recurring: {$this->name} (" . ($this->currency ?? 'BDT') . ' ' . number_format((float)$this->amount, 2) . " / {$this->frequency})";
     }
 }
